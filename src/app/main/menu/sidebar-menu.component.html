@@ -1,0 +1,10 @@
+<div class="layout-menu-container">
+  <ul class="layout-menu" role="menu">
+    <li *ngFor="let item of menuOptions; let i = index;" class="layout-menuitem-category" role="none">
+      <div [attr.aria-label]="item.label" class="layout-menuitem-root-text">{{item.label | translate}}</div>
+      <ul role="menu">
+        <li *ngFor="let child of item.items" [item]="child" app-menu-item role="none"></li>
+      </ul>
+    </li>
+  </ul>
+</div>

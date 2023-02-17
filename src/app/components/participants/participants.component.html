@@ -1,0 +1,136 @@
+<p-confirmDialog #delete_participant_dialog
+                 [breakpoints]="{'992px': '75vw', '768px': '100vw'}"
+                 [style]="{width: '40vw'}">
+  <ng-template pTemplate="footer">
+    <button (click)="delete_participant_dialog.reject()"
+            [label]="'Cancel' | translate"
+            class="p-button-secondary"
+            icon="pi pi-times"
+            pButton
+            pRipple
+            type="button">
+    </button>
+    <button (click)="delete_participant_dialog.accept()"
+            [label]="'Delete' | translate"
+            class="p-button-danger"
+            icon="pi pi-check"
+            pButton
+            pRipple
+            type="button">
+    </button>
+  </ng-template>
+</p-confirmDialog>
+<app-add-participant-dialog [(isVisible)]="isAddParticipantDialogVisible">
+</app-add-participant-dialog>
+<app-edit-participant-dialog [(isVisible)]="isEditParticipantDialogVisible"
+                             [editedParticipant]="editedParticipant">
+</app-edit-participant-dialog>
+<div class="grid p-fluid">
+  <div class="col-12">
+    <h3>{{selectedSettlement.name}}</h3>
+  </div>
+  <div class="col-12 xl:col-8">
+    <div class="card">
+      <h5 class="text-left w-full">{{'Participants' | translate}}</h5>
+      <p-button (onClick)="showAddParticipantDialog()"
+                *ngIf="!isUserViewer"
+                [label]="'Add participant' | translate"
+                icon="pi pi-plus">
+      </p-button>
+      <p-table [rowHover]="true" [value]="participants" responsiveLayout="stack">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>
+              {{'Participant' | translate}}
+            </th>
+            <th>
+              {{'Spent' | translate}}
+            </th>
+            <th>
+              {{'Balance' | translate}}
+            </th>
+            <th *ngIf="!isUserViewer">
+              {{'Options' | translate}}
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template let-participant pTemplate="body">
+          <tr>
+            <td>
+              <span class="p-column-title">{{'Participant' | translate}}</span>
+              {{participant.name}}
+            </td>
+            <td>
+              <span class="p-column-title">{{'Spent' | translate}}</span>
+              <div class="flex">
+                <div [class]="'currency-flag currency-flag-' + selectedSettlement.mainCurrencyCode.toLowerCase()"
+                     class="flex mr-2"
+                     style="margin-top: 2px">
+                </div>
+                <div class="flex">
+                  {{(participant.spends | spend: selectedSettlement.mainCurrencyCode) | currency: selectedSettlement.mainCurrencyCode}}
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="p-column-title">{{'Balance' | translate}}</span>
+              <span
+                [ngClass]="{'red-amount': (participant.balances | spend: selectedSettlement.mainCurrencyCode) < 0, 'green-amount': (participant.balances | spend: selectedSettlement.mainCurrencyCode) > 0}"
+                class="white-amount">
+                  {{(participant.balances | spend: selectedSettlement.mainCurrencyCode) | currency: selectedSettlement.mainCurrencyCode}}
+              </span>
+            </td>
+            <td *ngIf="!isUserViewer">
+              <span class="p-column-title">{{'Options' | translate}}</span>
+              <button (click)="participantMenu.toggle($event); setEditedParticipant(participant)"
+                      class="p-button-rounded p-button-text p-button-plain"
+                      icon="pi pi-ellipsis-v"
+                      pButton
+                      pRipple
+                      type="button">
+              </button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="100%">
+              {{'Settlement has no participants' | translate}}
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+  <div class="col-12 xl:col-4">
+    <div class="grid">
+      <div class="col-12">
+        <div class="card">
+          <h5 class="text-left w-full">{{'Participants\' balance' | translate}}</h5>
+          <p-chart #balanceChart
+                   [data]="participantBalanceChartData"
+                   [height]="balanceChartHeight"
+                   [options]="participantBalanceChartOptions"
+                   type="bar">
+          </p-chart>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="card">
+          <h5 class="text-left w-full">{{'Participants\' spends' | translate}}</h5>
+          <p-chart #spendChart
+                   [data]="participantSpendChartData"
+                   [options]="participantSpendChartOptions"
+                   height="40vh"
+                   type="pie">
+          </p-chart>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p-blockUI [blocked]="isBlocked">
+  <p-progressSpinner></p-progressSpinner>
+</p-blockUI>
+<p-menu #participantMenu [model]="participantMenuItems" [popup]="true"></p-menu>
+<p-toast></p-toast>

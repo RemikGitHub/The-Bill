@@ -1,0 +1,13 @@
+:host ::ng-deep .p-divider-content {
+  background-color: transparent;
+}
+
+:host ::ng-deep .p-divider-content {
+  padding: 0 !important;
+}
+
+.text-hidden {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}

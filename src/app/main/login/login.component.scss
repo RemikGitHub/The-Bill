@@ -1,0 +1,31 @@
+@use "../../../assets/sass/variables" as *;
+@use "../../../assets/sass/mixins" as *;
+
+.logo {
+  height: 3rem;
+  width: 6rem;
+
+  img {
+    height: 2rem;
+    margin-left: .5rem;
+  }
+}
+
+.login-container {
+  border-radius: 56px;
+  padding: 0.3rem;
+  background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 50%);
+}
+
+.login-container-header {
+  border-radius: 53px;
+  background: var(--surface-0);
+}
+
+.layout-config-button {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  margin-left: -43px;
+  margin-top: 10px;
+}

@@ -1,0 +1,166 @@
+<ng-container [ngTemplateOutletContext]="{ $implicit: content }"
+              [ngTemplateOutlet]="isTablet ? mobileDialog : desktopDialog">
+</ng-container>
+
+<ng-template #desktopDialog let-content>
+  <p-dialog (onHide)="closeDialog()"
+            (onShow)="updateForm()"
+            [(visible)]="isVisible"
+            [breakpoints]="{'992px': '75vw', '768px': '100vw'}"
+            [contentStyle]="{'overflow':'visible'}"
+            [draggable]="false"
+            [header]="'Edit expense' | translate"
+            [modal]="true"
+            [resizable]="false"
+            [style]="{width: '60vw'}">
+    <ng-container [ngTemplateOutlet]="content"></ng-container>
+  </p-dialog>
+</ng-template>
+
+<ng-template #mobileDialog let-content>
+  <p-sidebar (onHide)="closeDialog()"
+             (onShow)="updateForm()"
+             [(visible)]="isVisible"
+             [baseZIndex]="10000"
+             [blockScroll]="true"
+             [fullScreen]="true">
+    <ng-container [ngTemplateOutlet]="content"></ng-container>
+  </p-sidebar>
+</ng-template>
+
+<ng-template #content>
+  <form (ngSubmit)="onSubmitAddExpenseForm()" [formGroup]="editExpenseForm">
+    <div class="grid p-fluid">
+      <div class="field col-12 mt-4">
+        <span class="p-float-label">
+          <input
+            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+            formControlName="name"
+            id="name"
+            pInputText
+            type="text">
+          <label for="name">{{'Name' | translate}}</label>
+        </span>
+      </div>
+      <div class="field col-12 md:col-6 mt-1">
+        <p-dropdown (ngModelChange)="onChangeParticipant($event)"
+                    [autofocusFilter]="false"
+                    [filter]="true"
+                    [options]="participants"
+                    [showClear]="true"
+                    filterBy="name"
+                    formControlName="participant"
+                    optionLabel="name"
+                    placeholder="{{'Who paid' | translate}}">
+          <ng-template pTemplate="selectedItem">
+            <div>{{selectedParticipant.name}}</div>
+          </ng-template>
+          <ng-template let-participant pTemplate="item">
+            <div>{{participant.name}}</div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+      <div class="field col-12 md:col-6 mt-1">
+        <p-calendar [hourFormat]="'24'"
+                    [placeholder]="'Date' | translate"
+                    [showButtonBar]="true"
+                    [showIcon]="true"
+                    [showTime]="true"
+                    [touchUI]="isTablet"
+                    dateFormat="dd.mm.yy"
+                    formControlName="date">
+        </p-calendar>
+      </div>
+      <div class="field col-12 md:col-6 mt-1">
+        <p-dropdown (ngModelChange)="onChangeCurrency($event)"
+                    [autofocusFilter]="false"
+                    [filter]="true"
+                    [options]="currencies"
+                    [showClear]="true"
+                    class="dropdown"
+                    filterBy="currency,code"
+                    formControlName="currency"
+                    optionLabel="currency"
+                    placeholder="{{'Currency' | translate}}">
+          <ng-template pTemplate="selectedItem">
+            <div class="mb-1">
+              <div [class]="'vertical-align-middle inline-block mr-2 currency-flag currency-flag-' + selectedCurrency?.code.toLowerCase()">
+              </div>
+              <div class="vertical-align-middle inline-block">
+                {{selectedCurrency?.code + ' - '}}{{selectedCurrency?.currency | translate}}
+              </div>
+            </div>
+          </ng-template>
+          <ng-template let-currency pTemplate="item">
+            <div>
+              <div [class]="'vertical-align-middle inline-block mr-2 currency-flag currency-flag-' + currency.code.toLowerCase()"></div>
+              <div class="vertical-align-middle inline-block">
+                {{currency.code + ' - '}}{{currency.currency | translate}}
+              </div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+      <div class="field col-12 md:col-6 mt-1">
+        <p-inputNumber [currency]="selectedCurrency?.code ?? 'USD'"
+                       [placeholder]="'Amount' | translate"
+                       formControlName="amount"
+                       id="amount"
+                       locale="en-US"
+                       mode="currency">
+        </p-inputNumber>
+      </div>
+      <div class="field col-12 mt-1">
+        <p-multiSelect [autofocusFilter]="false"
+                       [defaultLabel]="'For who' | translate"
+                       [options]="participants"
+                       display="chip"
+                       formControlName="debtors"
+                       optionLabel="name">
+        </p-multiSelect>
+      </div>
+      <div *ngIf="!photoUrl" class="field col-12 mt-1">
+        <p-fileUpload (onSelect)="onSelectImage($event)"
+                      [chooseLabel]="'Add a photo of the bill' | translate"
+                      [customUpload]="true"
+                      [maxFileSize]="15 * 1024 * 1024"
+                      [showUploadButton]="false"
+                      [styleClass]="'p-button-outlined p-button-rounded'"
+                      [style]="{'width':'100%'}"
+                      accept="image/*"
+                      chooseIcon="pi-camera"
+                      mode="basic">
+        </p-fileUpload>
+      </div>
+      <div *ngIf="photoUrl" class="col-12 flex justify-content-center">
+        <p-image [preview]="true" [src]="photoUrl" alt="receipt" appendTo="body" height="100" width="100%"></p-image>
+      </div>
+      <div *ngIf="photoUrl" class="col-12 mt-1 mb-1">
+        <button (click)="deleteImage()"
+                [disabled]="photoIsUploading"
+                [label]="'Delete image' | translate"
+                class="p-button-outlined p-button-rounded p-button-danger p-button-sm"
+                icon="pi pi-times"
+                pButton
+                pRipple
+                type="button">
+        </button>
+      </div>
+      <div *ngIf="photoIsUploading" class="col-12">
+        <p-progressBar [value]="uploadPercentage"></p-progressBar>
+      </div>
+      <button [disabled]="!editExpenseForm.valid"
+              [label]="'Edit' | translate"
+              class="ml-2 mr-2"
+              icon="pi pi-pencil"
+              pButton
+              pRipple
+              type="submit">
+      </button>
+    </div>
+  </form>
+</ng-template>
+<p-blockUI [blocked]="isDialogBlocked">
+  <p-progressSpinner></p-progressSpinner>
+</p-blockUI>
+<p-toast></p-toast>

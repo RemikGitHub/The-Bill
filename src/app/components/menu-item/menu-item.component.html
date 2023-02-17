@@ -1,0 +1,13 @@
+<ng-container>
+  <a (click)="itemClick()"
+     [attr.aria-label]="item.label"
+     [attr.tabindex]="0"
+     [routerLinkActiveOptions]="{exact: false}"
+     [routerLink]="item.routerLink"
+     pRipple
+     role="menuitem"
+     routerLinkActive="router-link-exact-active">
+    <i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
+    <span>{{item.label | translate}}</span>
+  </a>
+</ng-container>

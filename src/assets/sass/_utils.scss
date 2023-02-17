@@ -1,0 +1,13 @@
+@import "variables";
+
+.card {
+  background-color: var(--surface-card);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  border-radius: $borderRadius;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, .02), 0 0 2px rgba(0, 0, 0, .05), 0 1px 4px rgba(0, 0, 0, .08) !important;
+
+  &.card-w-title {
+    padding-bottom: 2rem;
+  }
+}

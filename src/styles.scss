@@ -1,0 +1,77 @@
+/* You can add global styles to this file, and also import other style files */
+@import "../node_modules/primeng/resources/primeng.min.css";
+@import "../node_modules/primeflex/primeflex.scss";
+@import "../node_modules/primeicons/primeicons.css";
+@import "../node_modules/prismjs/themes/prism-coy.css";
+@import "../node_modules/currency-flags/dist/currency-flags.min.css";
+@import '~firebaseui/dist/firebaseui.css';
+@import "assets/sass/variables";
+@import "assets/sass/typography";
+@import "assets/sass/utils";
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  font-size: $fontSize;
+}
+
+body {
+  font-family: var(--font-family);
+  color: var(--text-color);
+  background-color: var(--surface-ground);
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  --scrollbar-width: 5px;
+  --scrollbar-height: 5px;
+  --scrollbar-border-radius: 10px;
+  --scrollbar-border-thickness: 0px;
+  --scrollbar-button-color: #00000000;
+  --scrollbar-corner-color: #00000000;
+  --scrollbar-border-color: #00000000;
+  --scrollbar-thumb-color: #2A323D;
+  --scrollbar-track-color: #A1A1AA00;
+}
+
+a {
+  text-decoration: none;
+  color: var(--primary-color);
+}
+
+.layout-theme-light {
+  background-color: #edf1f5;
+}
+
+body::-webkit-scrollbar {
+  width: var(--scrollbar-width, 20px);
+  height: var(--scrollbar-height, 20px);
+}
+
+body::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb-color, #3B82F6);
+  border: var(--scrollbar-border-thickness, 3px) solid var(--scrollbar-border-color, rgb(255, 255, 255));
+  border-radius: var(--scrollbar-border-radius, 4px);
+}
+
+body::-webkit-scrollbar-track {
+  background: var(--scrollbar-track-color, #A1A1AA);
+}
+
+body::-webkit-scrollbar-corner {
+  background: var(--scrollbar-corner-color, #FFFFFF);
+  border: var(--scrollbar-border-thickness, 3px) solid var(--scrollbar-border-color, rgb(255, 255, 255));
+  border-radius: var(--scrollbar-border-radius, 4px);
+}
+
+body::-webkit-scrollbar-button:vertical:start:increment, #preview::-webkit-scrollbar-button:vertical:end:decrement, #preview::-webkit-scrollbar-button:horizontal:start:increment, #preview::-webkit-scrollbar-button:horizontal:end:decrement {
+  display: var(--show-double-buttons, none);
+}
+
+div.p-image-toolbar {
+  mix-blend-mode: difference;
+}

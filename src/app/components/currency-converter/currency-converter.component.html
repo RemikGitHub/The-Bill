@@ -1,0 +1,99 @@
+<div class="card">
+  <h5 class="mb-4">{{'Currency converter' | translate}}</h5>
+  <div class="grid p-fluid mt-3">
+    <div [style.width]="isMobile ? null : '47.5%'" class="field col-12 md:col-fixed">
+      <p-dropdown (onChange)="clear()"
+                  (onClear)="clear()"
+                  [(ngModel)]="selectedFirstCurrency"
+                  [autofocusFilter]="false"
+                  [filter]="true"
+                  [options]="currencies"
+                  [showClear]="true"
+                  class="dropdown"
+                  filterBy="currency,code"
+                  optionLabel="currency"
+                  placeholder="{{'Convert from' | translate}}">
+        <ng-template pTemplate="selectedItem">
+          <div class="card-container mb-1">
+            <div [class]="'vertical-align-middle inline-block mr-2 currency-flag currency-flag-' + selectedFirstCurrency.code.toLowerCase()"></div>
+            <div class="vertical-align-middle inline-block">
+              {{selectedFirstCurrency.code + ' - '}}{{selectedFirstCurrency.currency | translate}}
+            </div>
+          </div>
+        </ng-template>
+        <ng-template let-currency pTemplate="item">
+          <div class="card-container">
+            <div [class]="'vertical-align-middle inline-block mr-2 currency-flag currency-flag-' + currency.code.toLowerCase()"></div>
+            <div class="vertical-align-middle inline-block">
+              {{currency.code + ' - '}}{{currency.currency | translate}}
+            </div>
+          </div>
+        </ng-template>
+      </p-dropdown>
+    </div>
+    <button (click)="swapCurrencies()"
+            [icon]="isMobile ? 'pi pi-arrows-v' : 'pi pi-arrows-h'"
+            [ngClass]="isMobile ? 'mb-3 ml-1' : 'mt-2'"
+            [style.width]="isMobile ? null : '5%'"
+            class="p-button-rounded p-button-text"
+            pButton
+            pRipple
+            type="button">
+    </button>
+    <div [style.width]="isMobile ? null : '47.5%'" class="field col-12 md:col-fixed">
+      <p-dropdown (onChange)="clear()"
+                  (onClear)="clear()"
+                  [(ngModel)]="selectedSecondCurrency"
+                  [autofocusFilter]="false"
+                  [filter]="true"
+                  [options]="currencies"
+                  [showClear]="true"
+                  class="dropdown"
+                  filterBy="currency,code"
+                  optionLabel="currency"
+                  placeholder="{{'Convert to' | translate}}">
+        <ng-template pTemplate="selectedItem">
+          <div class="mb-1">
+            <div [class]="'vertical-align-middle inline-block mr-2 currency-flag currency-flag-' + selectedSecondCurrency.code.toLowerCase()"></div>
+            <div class="vertical-align-middle inline-block">
+              {{selectedSecondCurrency.code + ' - '}}{{selectedSecondCurrency.currency | translate}}
+            </div>
+          </div>
+        </ng-template>
+        <ng-template let-currency pTemplate="item">
+          <div>
+            <div [class]="'vertical-align-middle inline-block mr-2 currency-flag currency-flag-' + currency.code.toLowerCase()"></div>
+            <div class="vertical-align-middle inline-block">
+              {{currency.code + ' - '}}{{currency.currency | translate}}
+            </div>
+          </div>
+        </ng-template>
+      </p-dropdown>
+    </div>
+    <div class="field col-12 md:col-6">
+      <span class="p-float-label">
+        <p-inputNumber [(ngModel)]="amount"
+                       [currency]="selectedFirstCurrency?.code ?? 'USD'"
+                       [placeholder]="'Amount' | translate"
+                       locale="en-US"
+                       mode="currency">
+        </p-inputNumber>
+      </span>
+    </div>
+    <div class="field col-12 md:col-6">
+      <p-inputNumber [(ngModel)]="calculatedValue"
+                     [currency]="selectedSecondCurrency?.code ?? 'USD'"
+                     [disabled]="true"
+                     [placeholder]="'Calculated value' | translate"
+                     locale="en-US"
+                     mode="currency">
+      </p-inputNumber>
+    </div>
+    <button (click)="calculate()"
+            class="mr-2 mb-2 ml-2"
+            label="{{'Calculate' | translate}}"
+            pButton
+            pRipple>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+<div [ngClass]="{'layout-theme-light':!config.isDarkTheme,
+                 'layout-theme-dark':config.isDarkTheme,
+                 'layout-static-sidebar-inactive':!menuConfig.isDesktopSidebarMenuActive,
+                 'layout-mobile-sidebar-active':menuConfig.isMobileSidebarMenuActive}"
+     class="layout-wrapper layout-static">
+  <app-topbar></app-topbar>
+  <div class="layout-sidebar">
+    <app-menu></app-menu>
+  </div>
+  <div class="layout-main-container">
+    <div class="layout-main">
+      <router-outlet></router-outlet>
+    </div>
+    <app-footer></app-footer>
+  </div>
+  <app-settings></app-settings>
+  <div *ngIf="menuConfig.isMobileSidebarMenuActive" class="layout-mask p-component-overlay"></div>
+</div>

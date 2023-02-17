@@ -1,0 +1,58 @@
+<ng-container [ngTemplateOutletContext]="{ $implicit: content }"
+              [ngTemplateOutlet]="isTablet ? mobileDialog : desktopDialog">
+</ng-container>
+
+<ng-template #desktopDialog let-content>
+  <p-dialog (onHide)="closeDialog()"
+            (onShow)="updateFormValues()"
+            [(visible)]="isVisible"
+            [breakpoints]="{'992px': '75vw', '768px': '100vw'}"
+            [draggable]="false"
+            [header]="'Edit participant' | translate"
+            [modal]="true"
+            [resizable]="false"
+            [style]="{width: '40vw'}">
+    <ng-container [ngTemplateOutlet]="content"></ng-container>
+  </p-dialog>
+</ng-template>
+
+<ng-template #mobileDialog let-content>
+  <p-sidebar (onHide)="closeDialog()"
+             (onShow)="updateFormValues()"
+             [(visible)]="isVisible"
+             [baseZIndex]="10000"
+             [blockScroll]="true"
+             [fullScreen]="true">
+    <ng-container [ngTemplateOutlet]="content"></ng-container>
+  </p-sidebar>
+</ng-template>
+
+<ng-template #content>
+  <form (ngSubmit)="onSubmitEditParticipantForm()" [formGroup]="editParticipantForm">
+    <div class="formgrid grid p-fluid">
+      <div class="field col-12 mt-4">
+    <span class="p-float-label">
+      <input
+        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+        formControlName="participantName"
+        id="name"
+        pInputText
+        type="text">
+      <label for="name">{{'Name' | translate}}</label>
+    </span>
+      </div>
+      <button [disabled]="!editParticipantForm.valid"
+              [label]="'Edit' | translate"
+              class="ml-2 mr-2"
+              icon="pi pi-pencil"
+              pButton
+              pRipple
+              type="submit">
+      </button>
+    </div>
+  </form>
+</ng-template>
+<p-blockUI [blocked]="isBlocked">
+  <p-progressSpinner></p-progressSpinner>
+</p-blockUI>
+<p-toast></p-toast>

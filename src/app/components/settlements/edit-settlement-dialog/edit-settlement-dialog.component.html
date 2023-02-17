@@ -1,0 +1,99 @@
+<ng-container [ngTemplateOutletContext]="{ $implicit: content }"
+              [ngTemplateOutlet]="isTablet ? mobileDialog : desktopDialog">
+</ng-container>
+
+<ng-template #desktopDialog let-content>
+  <p-dialog (onHide)="closeDialog()"
+            (onShow)="updateFormValues()"
+            [(visible)]="isVisible"
+            [breakpoints]="{'992px': '75vw', '768px': '100vw'}"
+            [contentStyle]="{'overflow':'visible'}"
+            [draggable]="false"
+            [header]="'Edit settlement' | translate"
+            [modal]="true"
+            [resizable]="false"
+            [style]="{width: '60vw'}">
+    <ng-container [ngTemplateOutlet]="content"></ng-container>
+  </p-dialog>
+</ng-template>
+
+<ng-template #mobileDialog let-content>
+  <p-sidebar (onHide)="closeDialog()"
+             (onShow)="updateFormValues()"
+             [(visible)]="isVisible"
+             [baseZIndex]="10000"
+             [blockScroll]="true"
+             [fullScreen]="true">
+    <ng-container [ngTemplateOutlet]="content"></ng-container>
+  </p-sidebar>
+</ng-template>
+
+<ng-template #content>
+  <form (ngSubmit)="onSubmitEditSettlementForm()" [formGroup]="editSettlementForm">
+    <div class="formgrid grid p-fluid">
+      <div class="field col-12 mt-4">
+    <span class="p-float-label">
+      <input
+        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+        formControlName="settlementName"
+        id="name"
+        pInputText
+        type="text">
+      <label for="name">{{'Name' | translate}}</label>
+    </span>
+      </div>
+      <div class="field col-12 mt-1">
+        <p-dropdown (ngModelChange)="onChangeCurrency($event)"
+                    [autofocusFilter]="false"
+                    [filter]="true"
+                    [options]="currencies"
+                    [showClear]="true"
+                    class="dropdown"
+                    filterBy="currency,code"
+                    formControlName="settlementCurrency"
+                    optionLabel="currency"
+                    placeholder="{{'Main currency' | translate}}">
+          <ng-template pTemplate="selectedItem">
+            <div class="mb-1">
+              <div [class]="'vertical-align-middle inline-block mr-2 currency-flag currency-flag-' + selectedCurrency?.code.toLowerCase()"></div>
+              <div class="vertical-align-middle inline-block">
+                {{selectedCurrency?.code + ' - '}}{{selectedCurrency?.currency | translate}}
+              </div>
+            </div>
+          </ng-template>
+          <ng-template let-currency pTemplate="item">
+            <div>
+              <div [class]="'vertical-align-middle inline-block mr-2 currency-flag currency-flag-' + currency.code.toLowerCase()"></div>
+              <div class="vertical-align-middle inline-block">
+                {{currency.code + ' - '}}{{currency.currency | translate}}
+              </div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+      <div class="field col-12 mt-1">
+    <span class="p-float-label">
+      <textarea
+        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+        formControlName="settlementDescription"
+        id="description"
+        pInputTextarea
+        rows="9"></textarea>
+      <label for="description">{{'Description' | translate}}</label>
+    </span>
+      </div>
+      <button [disabled]="!editSettlementForm.valid"
+              [label]="'Edit' | translate"
+              class="ml-2 mr-2"
+              icon="pi pi-pencil"
+              pButton
+              pRipple
+              type="submit">
+      </button>
+    </div>
+  </form>
+</ng-template>
+<p-blockUI [blocked]="isBlocked">
+  <p-progressSpinner></p-progressSpinner>
+</p-blockUI>
+<p-toast></p-toast>

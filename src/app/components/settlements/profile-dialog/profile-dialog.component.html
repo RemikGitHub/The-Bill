@@ -1,0 +1,40 @@
+<ng-container [ngTemplateOutletContext]="{ $implicit: content }"
+              [ngTemplateOutlet]="isTablet ? mobileDialog : desktopDialog">
+</ng-container>
+
+<ng-template #desktopDialog let-content>
+  <p-dialog (onHide)="closeDialog()"
+            [(visible)]="isVisible"
+            [breakpoints]="{'992px': '75vw', '768px': '100vw'}"
+            [contentStyle]="{'overflow':'visible'}"
+            [draggable]="false"
+            [header]="'Profile' | translate"
+            [modal]="true"
+            [resizable]="false"
+            [style]="{width: '40vw'}">
+    <ng-container [ngTemplateOutlet]="content"></ng-container>
+  </p-dialog>
+</ng-template>
+
+<ng-template #mobileDialog let-content>
+  <p-sidebar (onHide)="closeDialog()"
+             [(visible)]="isVisible"
+             [baseZIndex]="10000"
+             [blockScroll]="true"
+             [fullScreen]="true">
+    <ng-container [ngTemplateOutlet]="content"></ng-container>
+  </p-sidebar>
+</ng-template>
+
+<ng-template #content>
+  <div class="grid p-fluid">
+    <div class="col-12">
+      <h5>{{'User ID' | translate}}:</h5>
+      <div class="p-inputgroup mt-1">
+        <input [value]="this.user.uid" disabled="true" pInputText placeholder="User ID" type="text">
+        <button (click)="copyUserId()" icon="pi pi-copy" pButton pRipple type="button"></button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<p-toast></p-toast>

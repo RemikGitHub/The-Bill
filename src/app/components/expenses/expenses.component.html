@@ -1,0 +1,134 @@
+<p-confirmDialog #delete_expense_dialog
+                 [breakpoints]="{'992px': '75vw', '768px': '100vw'}"
+                 [style]="{width: '40vw'}">
+  <ng-template pTemplate="footer">
+    <button (click)="delete_expense_dialog.reject()"
+            [label]="'Cancel' | translate"
+            class="p-button-secondary"
+            icon="pi pi-times"
+            pButton
+            pRipple
+            type="button">
+    </button>
+    <button (click)="delete_expense_dialog.accept()"
+            [label]="'Delete' | translate"
+            class="p-button-danger"
+            icon="pi pi-check"
+            pButton
+            pRipple
+            type="button">
+    </button>
+  </ng-template>
+</p-confirmDialog>
+<app-add-expense-dialog [(isVisible)]="isAddExpenseDialogVisible">
+</app-add-expense-dialog>
+<app-edit-expense-dialog [(isVisible)]="isEditExpenseDialogVisible" [editedExpense]="editedExpense">
+</app-edit-expense-dialog>
+<div class="grid p-fluid">
+  <div class="col-12">
+    <h3>{{selectedSettlement.name}}</h3>
+  </div>
+  <div class="col-12">
+    <div class="card">
+      <h5 class="text-left w-full">{{'Expenses' | translate}}</h5>
+      <p-button (onClick)="showAddExpenseDialog()"
+                *ngIf="!isUserViewer"
+                [label]="'Add expense' | translate"
+                icon="pi pi-plus">
+      </p-button>
+      <p-table [breakpoint]="'1070px'" [rowHover]="true" [value]="expenses" responsiveLayout="stack">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>
+              {{'Expense name' | translate}}
+            </th>
+            <th>
+              {{'Amount' | translate}}
+            </th>
+            <th>
+              {{'Who paid' | translate}}
+            </th>
+            <th>
+              {{'For who' | translate}}
+            </th>
+            <th *ngIf="isExpensesHasPhoto">
+              {{'Photo' | translate}}
+            </th>
+            <th *ngIf="isExpensesHasDate">
+              {{'Date' | translate}}
+            </th>
+            <th *ngIf="!isUserViewer">
+              {{'Options' | translate}}
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template let-expense pTemplate="body">
+          <tr>
+            <td>
+              <span class="p-column-title">{{'Expense name' | translate}}</span>
+              {{expense.name}}
+            </td>
+            <td>
+              <span class="p-column-title">{{'Amount' | translate}}</span>
+              <div class="flex">
+                <div [class]="'currency-flag currency-flag-' + expense.currencyCode.toLowerCase()"
+                     class="flex mr-2"
+                     style="margin-top: 2px">
+                </div>
+                <div class="flex">
+                  {{expense.amount | currency: expense.currencyCode}}
+                </div>
+              </div>
+            </td>
+            <td *ngIf="getExpenseParticipant(expense)">
+              <span class="p-column-title">{{'Who paid' | translate}}</span>
+              {{getExpenseParticipant(expense).name}}
+            </td>
+            <td>
+              <span class="p-column-title">{{'For who' | translate}}</span>
+              <ng-container *ngFor="let debtor of getExpenseDebtors(expense); let i = index">
+                <ng-container *ngIf="i !== 0">,</ng-container>
+                {{debtor.name}}</ng-container>
+            </td>
+            <td *ngIf="isExpensesHasPhoto">
+              <span class="p-column-title">{{'Photo' | translate}}</span>
+              <p-image *ngIf="expense.photoUrl"
+                       [preview]="true"
+                       [src]="expense.photoUrl"
+                       alt="receipt"
+                       appendTo="body"
+                       height="30"
+                       width="30">
+              </p-image>
+            </td>
+            <td *ngIf="isExpensesHasDate">
+              <span class="p-column-title">{{'Date' | translate}}</span>
+              <ng-container *ngIf="expense.date">
+                {{expense.date.toDate() | date:'dd.MM.y, H:mm'}}
+              </ng-container>
+            </td>
+            <td *ngIf="!isUserViewer">
+              <span class="p-column-title">{{'Options' | translate}}</span>
+              <button (click)="expenseMenu.toggle($event);setEditedExpense(expense)"
+                      class="p-button-rounded p-button-text p-button-plain"
+                      icon="pi pi-ellipsis-v"
+                      pButton
+                      pRipple
+                      type="button">
+              </button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="100%">{{'Settlement has no expenses' | translate}}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+<p-menu #expenseMenu [model]="expenseMenuItems" [popup]="true"></p-menu>
+<p-blockUI [blocked]="isBlocked">
+  <p-progressSpinner></p-progressSpinner>
+</p-blockUI>

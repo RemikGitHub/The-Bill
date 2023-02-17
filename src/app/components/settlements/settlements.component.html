@@ -1,0 +1,132 @@
+<p-confirmDialog #delete_settlement_dialog
+                 [breakpoints]="{'992px': '75vw', '768px': '100vw'}"
+                 [style]="{width: '40vw'}">
+  <ng-template pTemplate="footer">
+    <button (click)="delete_settlement_dialog.reject()"
+            [label]="'Cancel' | translate"
+            class="p-button-secondary"
+            icon="pi pi-times"
+            pButton
+            pRipple
+            type="button">
+    </button>
+    <button (click)="delete_settlement_dialog.accept()"
+            [label]="'Delete' | translate"
+            class="p-button-danger"
+            icon="pi pi-check"
+            pButton
+            pRipple
+            type="button">
+    </button>
+  </ng-template>
+</p-confirmDialog>
+<app-add-settlement-dialog [(isVisible)]="isAddSettlementDialogVisible">
+</app-add-settlement-dialog>
+<app-edit-settlement-dialog [(isVisible)]="isEditSettlementDialogVisible"
+                            [editedSettlement]="editedSettlement">
+</app-edit-settlement-dialog>
+<app-profile-dialog [(isVisible)]="isAddSharedSettlementDialogVisible">
+</app-profile-dialog>
+<app-share-settlement-dialog [(isVisible)]="isProfileDialogVisible"
+                             [shareSettlement]="editedSettlement">
+</app-share-settlement-dialog>
+<div class="grid p-fluid">
+  <div class="col-12">
+    <div class="flex justify-content-between flex-wrap">
+      <div class="flex align-items-center justify-content-center">
+        <p-button (onClick)="showAddSettlementDialog()"
+                  [label]="'Add settlement' | translate"
+                  icon="pi pi-plus">
+        </p-button>
+      </div>
+      <div class="flex align-items-center justify-content-center">
+        <button (click)="showAddSharedSettlementDialog()"
+                class="p-button-outlined"
+                icon="pi pi-user"
+                pButton
+                pRipple
+                type="button">
+        </button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!settlements?.length && !sharedSettlements?.length; then empty_settlements_container else settlements_container">
+  </div>
+  <ng-template #empty_settlements_container>
+    <div class="col-12">
+      <p-message [text]="'You have no settlements' | translate" severity="info"></p-message>
+    </div>
+  </ng-template>
+  <ng-template #settlements_container>
+    <div *ngFor="let settlement of settlements" class="col-12 md:col-6 lg:col-4">
+      <p-card>
+        <div class="flex justify-content-between">
+          <h3 class="text-left w-full text-hidden">{{settlement.name}}</h3>
+          <button (click)="settlement_owner_menu.toggle($event);setEditingSettlement(settlement)"
+                  class="p-button-rounded p-button-text p-button-plain" icon="pi pi-ellipsis-v" pButton
+                  pRipple
+                  type="button">
+          </button>
+        </div>
+        <div>
+          {{settlement.mainCurrencyCode}}
+          <div [class]="'ml-1 currency-flag currency-flag-' + settlement.mainCurrencyCode.toLowerCase()">
+          </div>
+        </div>
+        <div>{{'Participants' | translate}}: {{settlement.participants}}</div>
+        <div>{{'Expenses' | translate}}: {{settlement.expenses}}</div>
+        <div>{{'Shares' | translate}}: {{getSettlementShares(settlement)}}</div>
+        <div class="mt-1">{{settlement.description}}</div>
+        <ng-template pTemplate="footer">
+          <p-radioButton (onClick)="setSelectedSettlement()"
+                         [(ngModel)]="selectedSettlement"
+                         [value]="settlement"
+                         name="chooseSettlement">
+          </p-radioButton>
+        </ng-template>
+      </p-card>
+    </div>
+    <div *ngIf="sharedSettlements?.length" class="col-12">
+      <p-divider align="center">
+        <p-badge [value]="'Shared settlements' | translate"></p-badge>
+      </p-divider>
+    </div>
+    <div *ngFor="let settlement of sharedSettlements" class="col-12 md:col-6 lg:col-4">
+      <p-card>
+        <div class="flex justify-content-between">
+          <h3 class="text-left w-full text-hidden">{{settlement.name}}
+            <i [ngClass]="isUserEditor(settlement) ? 'pi pi-pencil' : 'pi pi-eye'" class="ml-2"></i>
+          </h3>
+          <button
+            (click)="isUserEditor(settlement) ? settlement_editor_menu.toggle($event) : settlement_viewer_menu.toggle($event);setEditingSettlement(settlement)"
+            class="p-button-rounded p-button-text p-button-plain" icon="pi pi-ellipsis-v" pButton
+            pRipple
+            type="button">
+          </button>
+        </div>
+        <div>
+          {{settlement.mainCurrencyCode}}
+          <div [class]="'ml-1 currency-flag currency-flag-' + settlement.mainCurrencyCode.toLowerCase()"></div>
+        </div>
+        <div>{{'Participants' | translate}}: {{settlement.participants}}</div>
+        <div>{{'Expenses' | translate}}: {{settlement.expenses}}</div>
+        <div>{{'Shares' | translate}}: {{getSettlementShares(settlement)}}</div>
+        <div class="mt-1">{{settlement.description}}</div>
+        <ng-template pTemplate="footer">
+          <p-radioButton (onClick)="setSelectedSettlement()"
+                         [(ngModel)]="selectedSettlement"
+                         [value]="settlement"
+                         name="chooseSettlement">
+          </p-radioButton>
+        </ng-template>
+      </p-card>
+    </div>
+  </ng-template>
+</div>
+<p-menu #settlement_owner_menu [model]="settlementOwnerMenuItems" [popup]="true"></p-menu>
+<p-menu #settlement_editor_menu [model]="settlementEditorMenuItems" [popup]="true"></p-menu>
+<p-menu #settlement_viewer_menu [model]="settlementViewerMenuItems" [popup]="true"></p-menu>
+<p-blockUI [blocked]="isBlocked">
+  <p-progressSpinner></p-progressSpinner>
+</p-blockUI>
+<p-toast></p-toast>

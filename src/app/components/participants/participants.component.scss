@@ -1,0 +1,19 @@
+.green-amount {
+  color: #008000;
+}
+
+.red-amount {
+  color: #ff0000;
+}
+
+.white-amount {
+  font-weight: bold;
+}
+
+.p-column-title {
+  font-weight: bold;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+  border-width: 0 0 1px 0 !important;
+}

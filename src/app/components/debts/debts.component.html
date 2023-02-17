@@ -1,0 +1,61 @@
+<div class="grid p-fluid">
+  <div class="col-12">
+    <h3>{{selectedSettlement.name}}</h3>
+  </div>
+  <div class="col-12">
+    <div class="card">
+      <h5 class="text-left w-full">{{'Debts' | translate}}</h5>
+      <p-table [rowHover]="true" [value]="debts" responsiveLayout="stack">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>
+              {{'Participant' | translate}}
+            </th>
+            <th>
+              {{'Should return' | translate}}
+            </th>
+            <th>
+              {{'For' | translate}}
+            </th>
+            <th>
+              {{'Sum' | translate}}
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template let-debt pTemplate="body">
+          <tr>
+            <td>
+              <span class="p-column-title">{{'Participant' | translate}}</span>
+              {{debt.debtor}}
+            </td>
+            <td>
+              <span class="p-column-title">{{'Should return' | translate}}</span>
+              <i [ngClass]="isTablet ? 'pi-arrow-down' : 'pi-arrow-right'" class="pi"></i>
+            </td>
+            <td class="lastColumn">
+              <span class="p-column-title">{{'For' | translate}}</span>
+              {{debt.creditor}}
+            </td>
+            <td>
+              <span class="p-column-title">{{'Sum' | translate}}</span>
+              <div class="flex">
+                <div [class]="'currency-flag currency-flag-' + selectedSettlement.mainCurrencyCode.toLowerCase()"
+                     class="flex mr-2"
+                     style="margin-top: 2px">
+                </div>
+                <div class="flex">
+                  {{debt.value | currency: selectedSettlement.mainCurrencyCode}}
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="100%">{{'No debts found' | translate}}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>

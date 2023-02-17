@@ -1,0 +1,73 @@
+<div [ngClass]="{'layout-config-active': isConfigMenuActive}"
+     class="layout-config"
+     id="layout-config">
+  <button (click)="onExitConfigButtonClick()"
+          class="p-button-rounded p-button-danger p-button-text layout-config-close"
+          icon="pi pi-times"
+          pButton
+          pRipple
+          type="button">
+  </button>
+  <div class="layout-config-content">
+    <h6 class="mt-0">{{'Font size' | translate}}</h6>
+    <div class="config-scale">
+      <button (click)="decrementScale()"
+              [disabled]="config.scale === scales[0]"
+              class="p-button-rounded p-button-text"
+              icon="pi pi-minus"
+              pButton
+              pRipple
+              type="button">
+      </button>
+      <i *ngFor="let item of scales"
+         [ngClass]="{'scale-active': item === config.scale}"
+         class="pi pi-circle-fill">
+      </i>
+      <button (click)="incrementScale()"
+              [disabled]="config.scale === scales[scales.length - 1]"
+              class="p-button-rounded p-button-text"
+              icon="pi pi-plus"
+              pButton
+              pRipple
+              type="button">
+      </button>
+    </div>
+    <h6>{{'Theme' | translate}}</h6>
+    <div class="p-formgroup-inline">
+      <div class="field-radiobutton">
+        <p-radioButton (onClick)="changeTheme(false)"
+                       [(ngModel)]="config.isDarkTheme"
+                       [value]="false"
+                       id="inputStyleLight"
+                       inputId="inputStyleLight"
+                       name="inputStyleLight">
+        </p-radioButton>
+        <label for="inputStyleLight">{{'Light' | translate}}</label>
+      </div>
+      <div class="field-radiobutton">
+        <p-radioButton (onClick)="changeTheme( true)"
+                       [(ngModel)]="config.isDarkTheme"
+                       [value]="true"
+                       id="inputStyleDark"
+                       inputId="inputStyleDark"
+                       name="inputStyleDark">
+        </p-radioButton>
+        <label for="inputStyleDark">{{'Dark' | translate}}</label>
+      </div>
+    </div>
+
+    <h6>{{'Language' | translate}}</h6>
+    <p-listbox (onClick)="changeLanguage()"
+               [(ngModel)]="config.language"
+               [multiple]="false"
+               [options]="languages"
+               optionLabel="name">
+      <ng-template let-language pTemplate="item">
+        <div class="flex">
+          <img alt="flag" class="flag mr-2" src="../../../assets/layout/flags/{{language.code}}.svg"/>
+          <div>{{language.name}}</div>
+        </div>
+      </ng-template>
+    </p-listbox>
+  </div>
+</div>
